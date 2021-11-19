@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Routes, Route, Link } from "react-router-dom";
 import Users from "./pages/Users";
 import Orders from "./pages/Orders";

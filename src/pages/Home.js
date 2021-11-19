@@ -24,12 +24,17 @@ const Home = (props) => {
     const [cars, setCars] = useState(null)
     const [target, setTarget] = useState(null)
     const [modify, setModify] = useState(null)
+    const [amount, setAmount] = useState(1);
 
     useEffect(() => {
         getUsers()
         getOrders()
         getCars()
     }, [])
+
+    useEffect(() => {
+        setAmount(1)
+    },[target])
 
     const getUsers = async () => {
         console.log(url)
@@ -65,6 +70,8 @@ const Home = (props) => {
             if(target === 'users') getUsers()
             if(target === 'orders') getOrders()
             if(target === 'cars') getCars()
+            setModify(null)
+            setTarget(null)
         }).catch(err => console.error(err))
     }
 
@@ -102,15 +109,20 @@ const Home = (props) => {
             <div>
                 Tilaukset <button onClick={getOrders}>Refresh</button><button onClick={() => handleTargetChange('orders')} >Add</button>
                 {(Array.isArray(orders) && orders.length > 0) && orders.map(order => {
+                    const starts_at = new Date(order.starts_at).toLocaleString()
+                    const ends_at = new Date(order.ends_at).toLocaleString()
                     return <Box key={order._id} onPressModify={() => onPressModify('orders', order)}>
-                        <p>{order.starts_at} {order.ends_at}</p>
-                        <p>{order.user_id} {order.car_id}</p>
+                        Alkaa: {starts_at} <br/>
+                        Päättyy: {ends_at}
+                        <p>Käyttäjä: {order.user_id}</p>
+                        <p>Auto: {order.car_id}</p>
                         <p>ID: {order._id}</p>
                     </Box>
                 })}
             </div>
             <div>
-                Autot   <button onClick={getCars}>Refresh</button><button onClick={() => handleTargetChange('cars')}>Add</button>
+                Autot <button onClick={getCars}>Refresh</button><button onClick={() => handleTargetChange('cars')}>Add</button>
+                <div style={{ display: 'flex', flexWrap: 'wrap' }}>
                 {(Array.isArray(cars) && cars.length > 0) && cars.map(car => {
                     return <Box key={car._id} image_url={car.image_url} onPressModify={() => onPressModify('cars', car)} onPressRemove={() => onPressRemove('cars', car._id)} >
                         <p>{car.name} {car.manufacturer} {car.model}</p>
@@ -118,11 +130,13 @@ const Home = (props) => {
                         <p>ID: {car._id}</p>
                     </Box>
                 })}
+                </div>
             </div>
 
-            {(target && !modify) && <InputForm target={target} onSubmit={(body) => onSubmit(target, body)}/>}
+            {(target && !modify) && Array.from({ length: amount}).map(e => <InputForm key={e} target={target} onSubmit={(body) => onSubmit(target, body)}/>)}
             {(target && modify) && <ModifyForm modify={modify} target={target} onSubmit={(body) => onModify(target, body)}/>}
         </div>
+        
     </div>
 }
 
