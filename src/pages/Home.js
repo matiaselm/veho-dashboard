@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import url from 'url';
+import InputForm from '../components/InputForm'
+import ModifyForm from '../components/ModifyForm'
+import Box from '../components/Box';
 
 const styles = {
     columns: {
@@ -19,6 +22,8 @@ const Home = (props) => {
     const [users, setUsers] = useState(null)
     const [orders, setOrders] = useState(null)
     const [cars, setCars] = useState(null)
+    const [target, setTarget] = useState(null)
+    const [modify, setModify] = useState(null)
 
     useEffect(() => {
         getUsers()
@@ -45,37 +50,78 @@ const Home = (props) => {
         }).catch(err => console.error(err))
     }
 
+    const onSubmit = (target, body) => {
+        axios.post(`http://localhost:3000/${target}`, body).then(res => {
+            console.log(res)
+            if(target === 'users') getUsers()
+            if(target === 'orders') getOrders()
+            if(target === 'cars') getCars()
+        }).catch(err => console.error(err))
+    }
+
+    const onModify = (target, body) => {
+        axios.put(`http://localhost:3000/${target}/${body._id}`, body).then(res => {
+            console.log(res)
+            if(target === 'users') getUsers()
+            if(target === 'orders') getOrders()
+            if(target === 'cars') getCars()
+        }).catch(err => console.error(err))
+    }
+
+    const onPressRemove = (target, id) => {
+        const c = window.confirm(`Remove ${target} with id ${id}?`)
+        if(c) axios.delete(`http://localhost:3000/${target}/${id}`).then(res => {
+            console.log(res)
+            if(target === 'users') getUsers()
+            if(target === 'orders') getOrders()
+            if(target === 'cars') getCars()
+        }).catch(err => console.error(err))
+    }
+
+    const onPressModify = (target, body) => {
+        setTarget(target)
+        setModify(body)
+    }
+
+    const handleTargetChange = (target) => {
+        setTarget(target)
+        setModify(null)
+    }
+
     return <div><h1>Home</h1>
         <div style={styles.columns}>
             <div>
-                Käyttäjät
+                Käyttäjät <button onClick={getUsers}>Refresh</button><button onClick={() => handleTargetChange('users')}>Add</button>
                 {(Array.isArray(users) && users.length > 0) && users.map(user => {
-                    return <div key={user._id} style={styles.card}>
+                    return <Box key={user._id} image_url={user.image_url} onPressModify={() => onPressModify('users', user)} onPressRemove={() => onPressRemove('users', user._id)}>
                         <p>{user.name} {user.manufacturer} {user.model}</p>
                         <p>ID: {user._id}</p>
-                    </div>
+                    </Box>
                 })}
             </div>
             <div>
-                Tilaukset
+                Tilaukset <button onClick={getOrders}>Refresh</button><button onClick={() => handleTargetChange('orders')} >Add</button>
                 {(Array.isArray(orders) && orders.length > 0) && orders.map(order => {
-                    return <div key={order._id} style={styles.card}>
+                    return <Box key={order._id} onPressModify={() => onPressModify('orders', order)}>
                         <p>{order.starts_at} {order.ends_at}</p>
                         <p>{order.user_id} {order.car_id}</p>
                         <p>ID: {order._id}</p>
-                    </div>
+                    </Box>
                 })}
             </div>
             <div>
-                Autot
+                Autot   <button onClick={getCars}>Refresh</button><button onClick={() => handleTargetChange('cars')}>Add</button>
                 {(Array.isArray(cars) && cars.length > 0) && cars.map(car => {
-                    return <div key={car._id} style={styles.card}>
+                    return <Box key={car._id} image_url={car.image_url} onPressModify={() => onPressModify('cars', car)} onPressRemove={() => onPressRemove('cars', car._id)} >
                         <p>{car.name} {car.manufacturer} {car.model}</p>
                         <p>{car.year} {car.km} {car.fueltype}</p>
                         <p>ID: {car._id}</p>
-                    </div>
+                    </Box>
                 })}
             </div>
+
+            {(target && !modify) && <InputForm target={target} onSubmit={(body) => onSubmit(target, body)}/>}
+            {(target && modify) && <ModifyForm modify={modify} target={target} onSubmit={(body) => onModify(target, body)}/>}
         </div>
     </div>
 }
