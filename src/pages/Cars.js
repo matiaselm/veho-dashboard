@@ -4,14 +4,6 @@ import InputForm from '../components/InputForm'
 import ModifyForm from '../components/ModifyForm'
 import Box from '../components/Box';
 
-const styles = {
-  card: {
-    backgroundColor: '#ddd',
-    margin: 5,
-    maxWidth: 500
-  }
-}
-
 const Cars = (props) => {
   const [cars, setCars] = useState(null)
   const [modify, setModify] = useState(null);
