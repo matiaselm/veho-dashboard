@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import url from 'url';
+import url from '../url';
+import models from '../constants/models';
 import InputForm from '../components/InputForm'
 import ModifyForm from '../components/ModifyForm'
 import Box from '../components/Box';
@@ -25,6 +26,7 @@ const Home = (props) => {
     const [target, setTarget] = useState(null)
     const [modify, setModify] = useState(null)
     const [amount, setAmount] = useState(1);
+    const { types } = models;
 
     useEffect(() => {
         getUsers()
@@ -38,25 +40,25 @@ const Home = (props) => {
 
     const getUsers = async () => {
         console.log(url)
-        axios.get(`http://localhost:3000/users`).then(res => {
+        axios.get(`${url}/users`).then(res => {
             setUsers(res.data)
         }).catch(err => console.error(err))
     }
 
     const getOrders = async () => {
-        axios.get(`http://localhost:3000/orders`).then(res => {
+        axios.get(`${url}/orders`).then(res => {
             setOrders(res.data)
         }).catch(err => console.error(err))
     }
 
     const getCars = async () => {
-        axios.get(`http://localhost:3000/cars`).then(res => {
+        axios.get(`${url}/cars`).then(res => {
             setCars(res.data)
         }).catch(err => console.error(err))
     }
 
     const onSubmit = (target, body) => {
-        axios.post(`http://localhost:3000/${target}`, body).then(res => {
+        axios.post(`${url}/${target}`, body).then(res => {
             console.log(res)
             if(target === 'users') getUsers()
             if(target === 'orders') getOrders()
@@ -65,7 +67,7 @@ const Home = (props) => {
     }
 
     const onModify = (target, body) => {
-        axios.put(`http://localhost:3000/${target}/${body._id}`, body).then(res => {
+        axios.put(`${url}/${target}/${body._id}`, body).then(res => {
             console.log(res)
             if(target === 'users') getUsers()
             if(target === 'orders') getOrders()
@@ -77,7 +79,7 @@ const Home = (props) => {
 
     const onPressRemove = (target, id) => {
         const c = window.confirm(`Remove ${target} with id ${id}?`)
-        if(c) axios.delete(`http://localhost:3000/${target}/${id}`).then(res => {
+        if(c) axios.delete(`${url}/${target}/${id}`).then(res => {
             console.log(res)
             if(target === 'users') getUsers()
             if(target === 'orders') getOrders()
@@ -132,9 +134,11 @@ const Home = (props) => {
                 })}
                 </div>
             </div>
-
-            {(target && !modify) && Array.from({ length: amount}).map(e => <InputForm key={e} target={target} onSubmit={(body) => onSubmit(target, body)}/>)}
-            {(target && modify) && <ModifyForm modify={modify} target={target} onSubmit={(body) => onModify(target, body)}/>}
+            
+            <div style={{ position: 'absolute', right: 30, width: 300, backgroundColor: '#eee', borderRadius: 10 }}>
+                {(target && !modify) && Array.from({ length: amount}).map(e => <InputForm key={e} target={target} onSubmit={(body) => onSubmit(target, body)} options={types}/>)}
+                {(target && modify) && <ModifyForm onClose={() => setTarget(null)} modify={modify} target={target} onSubmit={(body) => onModify(target, body)} options={types}/>}
+            </div>
         </div>
         
     </div>

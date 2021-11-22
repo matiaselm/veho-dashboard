@@ -8,11 +8,12 @@ import './App.css';
 
 const App = () => {
   return (<div>
-    <Link to="/">Home</Link><br />
-    <Link to="/users">Users</Link><br />
-    <Link to="/orders">Orders</Link><br />
-    <Link to="/cars">Cars</Link><br />
-
+    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', maxWidth: 400, margin: 5 }}>
+      <Link to="/">Home</Link><br />
+      <Link to="/users">Users</Link><br />
+      <Link to="/orders">Orders</Link><br />
+      <Link to="/cars">Cars</Link><br />
+    </div>
     <hr />
 
     <Routes>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import FormInput from './FormInput';
 
-const ModifyForm = ({ onSubmit, modify, target, onClose }) => {
+const ModifyForm = ({ onSubmit, modify, target, onClose, options }) => {
   const [form, setForm] = useState(modify);
 
   useEffect(() => {
@@ -20,20 +21,15 @@ const ModifyForm = ({ onSubmit, modify, target, onClose }) => {
     setForm(null)
   }
 
+  useEffect(() => {
+    console.log(form)
+  }, [form])
+
   return (<div style={{ maxWidth: 400, padding: 10 }}>
-    <p>{modify.name} {modify.manufacturer} {modify.model} { onClose && <button onClick={onClose}>Peruuta</button>}</p>
+    {onClose && <button onClick={onClose}>Peruuta</button>}
+    <p>{modify.name} {modify.manufacturer} {modify.model}</p>
     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column' }}>
-      {form && Object.keys(form).map((key, i) => {
-        if( key=== '_id' || key === '__v') {
-          return null
-        } else if (key === 'starts_at' || key === 'ends_at') {
-          return <input type="date" name={key} placeholder={key} value={form[key]} onChange={handleChange} key={i} style={{ margin: 5 }} />
-        } else if(key === 'active' ) {
-          return <input type="checkbox" name={key} placeholder={key} value={form[key]} onChange={handleChange} key={i} style={{ margin: 5 }} />
-        } else {
-          return <input type="text" name={key} placeholder={key} value={form[key]} onChange={handleChange} key={i} style={{ margin: 5 }} />
-        }
-      })}
+      {form && Object.keys(form).map((key, i) => <FormInput onChange={handleChange} type={key} value={form[key]} options={options} />)}
       <button type="submit" style={{ margin: 5 }}>Submit changes</button>
     </form>
   </div>

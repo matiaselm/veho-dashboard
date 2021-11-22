@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import models from '../constants/models';
-const InputForm = ({ onSubmit, target }) => {
-  const { user, car, order, types } = models;
+import FormInput from './FormInput';
+
+const InputForm = ({ onSubmit, target, options }) => {
+  const { user, car, order } = models;
   const [form, setForm] = useState(null)
 
   useEffect(() => {
@@ -32,27 +34,7 @@ const InputForm = ({ onSubmit, target }) => {
     <p style={{ fontSize: 20 }}>{target.toUpperCase()}</p>
     {form?.image_url && <img style={{ maxWidth: 300 }} src={form.image_url} alt="url" />}
     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column' }}>
-      {form && Object.keys(form).map((key, i) => {
-        if (key === 'active' || key === '__v') return null
-        if (key === 'starts_at' || key === 'ends_at') {
-          return <div  style={{ margin: 5 }}> 
-            {key}: <input type="date" name={key} placeholder={key} value={form[key]} onChange={handleChange} key={i} />
-          </div>
-        } else if (key === 'type') {
-          return <div style={{ margin: 5 }}>
-            {key}: <br/>
-            <select name={key} value={form[key]} onChange={handleChange} key={i} >
-              {types.map((type, i) => <option value={type} key={i}>{type}</option>)}
-            </select>
-          </div>
-        } else {
-          return <div  style={{ margin: 5 }}>
-            {key}: <br />
-            <input type="text" name={key} placeholder={key} value={form[key]} onChange={handleChange} key={i} />
-          </div>
-
-        }
-      })}
+      {form && Object.keys(form).map((key, i) => <FormInput key={i} name={key} type={key} value={form[key]} onChange={handleChange} options={options} />)}
       <button type="submit" style={{ margin: 5 }}>Add</button>
     </form>
   </div>

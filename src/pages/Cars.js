@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import url from '../url';
 import InputForm from '../components/InputForm'
 import ModifyForm from '../components/ModifyForm'
 import Box from '../components/Box';
@@ -14,20 +15,20 @@ const Cars = (props) => {
   }, [])
 
   const getCars = async () => {
-    axios.get(`http://localhost:3000/cars`).then(res => {
+    axios.get(`${url}/cars`).then(res => {
       setCars(res.data)
     }).catch(err => console.error(err))
   }
 
   const onModify = () => {
-    axios.post(`http://localhost:3000/cars/${modify._id}`, modify).then(res => {
+    axios.post(`${url}/cars/${modify._id}`, modify).then(res => {
       console.log(res)
       getCars()
     }).catch(err => console.error(err))
   }
 
   const onSubmit = (body) => {
-    axios.post(`http://localhost:3000/cars`, body).then(res => {
+    axios.post(`${url}/cars`, body).then(res => {
       console.log(res)
       getCars()
     }).catch(err => console.error(err))
@@ -35,7 +36,7 @@ const Cars = (props) => {
 
   const onRemove = (car) => {
     const c = window.confirm(`Remove ${car.manufacturer} ${car.model}?`)
-    if(c) axios.delete(`http://localhost:3000/cars/${car._id}`).then(res => {
+    if(c) axios.delete(`${url}/cars/${car._id}`).then(res => {
       console.log(res)
       getCars()
     }).catch(err => console.error(err))
