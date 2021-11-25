@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../services/axios';
 import url from '../url';
 import ModifyForm from '../components/ModifyForm'
 import InputForm from '../components/InputForm'

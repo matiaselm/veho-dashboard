@@ -25,12 +25,12 @@ const ModifyForm = ({ onSubmit, modify, target, onClose, options }) => {
     console.log(form)
   }, [form])
 
-  return (<div style={{ maxWidth: 400, padding: 10 }}>
+  return (<div style={{ padding: 5, border: '1px solid black', maxWidth: 350 }}>
     {onClose && <button onClick={onClose}>Peruuta</button>}
     <p>{modify.name} {modify.manufacturer} {modify.model}</p>
     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column' }}>
       {form && Object.keys(form).map((key, i) => <FormInput onChange={handleChange} type={key} value={form[key]} options={options} />)}
-      <button type="submit" style={{ margin: 5 }}>Submit changes</button>
+      <button type="submit" style={{ margin: 5 }}>Tallenna muutokset</button>
     </form>
   </div>
   )

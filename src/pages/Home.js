@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../services/axios';
 import url from '../url';
 import models from '../constants/models';
 import InputForm from '../components/InputForm'
@@ -40,25 +40,25 @@ const Home = (props) => {
 
     const getUsers = async () => {
         console.log(url)
-        axios.get(`${url}/users`).then(res => {
+        axios.get(`users`).then(res => {
             setUsers(res.data)
         }).catch(err => console.error(err))
     }
 
     const getOrders = async () => {
-        axios.get(`${url}/orders`).then(res => {
+        axios.get(`orders`).then(res => {
             setOrders(res.data)
         }).catch(err => console.error(err))
     }
 
     const getCars = async () => {
-        axios.get(`${url}/cars`).then(res => {
+        axios.get(`cars`).then(res => {
             setCars(res.data)
         }).catch(err => console.error(err))
     }
 
     const onSubmit = (target, body) => {
-        axios.post(`${url}/${target}`, body).then(res => {
+        axios.post(`${target}`, body).then(res => {
             console.log(res)
             if(target === 'users') getUsers()
             if(target === 'orders') getOrders()
@@ -67,7 +67,7 @@ const Home = (props) => {
     }
 
     const onModify = (target, body) => {
-        axios.put(`${url}/${target}/${body._id}`, body).then(res => {
+        axios.put(`${target}/${body._id}`, body).then(res => {
             console.log(res)
             if(target === 'users') getUsers()
             if(target === 'orders') getOrders()
@@ -79,7 +79,7 @@ const Home = (props) => {
 
     const onPressRemove = (target, id) => {
         const c = window.confirm(`Remove ${target} with id ${id}?`)
-        if(c) axios.delete(`${url}/${target}/${id}`).then(res => {
+        if(c) axios.delete(`${target}/${id}`).then(res => {
             console.log(res)
             if(target === 'users') getUsers()
             if(target === 'orders') getOrders()
@@ -97,7 +97,7 @@ const Home = (props) => {
         setModify(null)
     }
 
-    return <div><h1>Home</h1>
+    return <div><h1>Dashboard</h1>
         <div style={styles.columns}>
             <div>
                 Käyttäjät <button onClick={getUsers}>Refresh</button><button onClick={() => handleTargetChange('users')}>Add</button>
