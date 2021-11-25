@@ -6,6 +6,8 @@ import Cars from "./pages/Cars";
 import Home from "./pages/Home";
 import './App.css';
 import axios from './services/axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
@@ -55,6 +57,18 @@ const App = () => {
         <Route path="/cars" element={<Cars />} />
       </Routes>
     </div>}
+
+    <ToastContainer
+      position="top-center"
+      autoClose={3000}
+      hideProgressBar
+      newestOnTop={false}
+      closeOnClick
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+    />
   </div>
   );
 }

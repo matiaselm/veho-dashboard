@@ -5,6 +5,7 @@ import models from '../constants/models';
 import InputForm from '../components/InputForm'
 import ModifyForm from '../components/ModifyForm'
 import Box from '../components/Box';
+import { toast } from 'react-toastify';
 
 const styles = {
     columns: {
@@ -63,7 +64,13 @@ const Home = (props) => {
             if(target === 'users') getUsers()
             if(target === 'orders') getOrders()
             if(target === 'cars') getCars()
-        }).catch(err => console.error(err))
+            toast.success(`Added new to ${target}!`)
+            setModify(null)
+            setTarget(null)
+        }).catch(err => {
+            toast.error(err.message)
+            console.error(err)
+        })
     }
 
     const onModify = (target, body) => {
@@ -74,17 +81,24 @@ const Home = (props) => {
             if(target === 'cars') getCars()
             setModify(null)
             setTarget(null)
-        }).catch(err => console.error(err))
+        }).catch(err => {
+            console.error(err)
+            toast.error(err.message)
+        })
     }
 
     const onPressRemove = (target, id) => {
         const c = window.confirm(`Remove ${target} with id ${id}?`)
         if(c) axios.delete(`${target}/${id}`).then(res => {
             console.log(res)
+            toast.success(res.data)
             if(target === 'users') getUsers()
             if(target === 'orders') getOrders()
             if(target === 'cars') getCars()
-        }).catch(err => console.error(err))
+        }).catch(err => {
+            console.error(err)
+            toast.error(err.message)
+        })
     }
 
     const onPressModify = (target, body) => {
@@ -136,7 +150,7 @@ const Home = (props) => {
             </div>
             
             <div style={{ position: 'absolute', right: 30, width: 300, backgroundColor: '#eee', borderRadius: 10 }}>
-                {(target && !modify) && Array.from({ length: amount}).map(e => <InputForm key={e} target={target} onSubmit={(body) => onSubmit(target, body)} options={types}/>)}
+                {(target && !modify) && Array.from({ length: amount}).map(e => <InputForm key={e} onClose={() => setTarget(null)} target={target} onSubmit={(body) => onSubmit(target, body)} options={types}/>)}
                 {(target && modify) && <ModifyForm onClose={() => setTarget(null)} modify={modify} target={target} onSubmit={(body) => onModify(target, body)} options={types}/>}
             </div>
         </div>
