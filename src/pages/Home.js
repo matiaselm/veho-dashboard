@@ -21,11 +21,16 @@ const styles = {
 }
 
 const Home = (props) => {
-    const [users, setUsers] = useState(null)
-    const [orders, setOrders] = useState(null)
-    const [cars, setCars] = useState(null)
-    const [target, setTarget] = useState(null)
-    const [modify, setModify] = useState(null)
+    const [users, setUsers]   = useState(null);
+    const [orders, setOrders] = useState(null);
+    const [cars, setCars]     = useState(null);
+    const [target, setTarget] = useState(null);
+    const [modify, setModify] = useState(null);
+    const [toggles, setToggles] = useState({
+        users: true,
+        orders: true,
+        cars: true
+    });
     const [amount, setAmount] = useState(1);
     const { types } = models;
 
@@ -114,8 +119,11 @@ const Home = (props) => {
     return <div><h1>Dashboard</h1>
         <div style={styles.columns}>
             <div>
-                Käyttäjät <button onClick={getUsers}>Refresh</button><button onClick={() => handleTargetChange('users')}>Add</button>
-                {(Array.isArray(users) && users.length > 0) && users.map(user => {
+                Käyttäjät <br />
+                <button onClick={getUsers}>Refresh</button>
+                <button onClick={() => handleTargetChange('users')}>Add</button>
+                <button onClick={() => setToggles(prev => ({ ...prev, users: !prev['users'] }))}>{toggles.users ? 'Piilota' : 'Näytä'}</button>
+                {toggles.users && (Array.isArray(users) && users.length > 0) && users.map(user => {
                     return <Box key={user._id} image_url={user.image_url} onPressModify={() => onPressModify('users', user)} onPressRemove={() => onPressRemove('users', user._id)}>
                         <p>{user.name} {user.manufacturer} {user.model}</p>
                         <p>ID: {user._id}</p>
@@ -123,8 +131,11 @@ const Home = (props) => {
                 })}
             </div>
             <div>
-                Tilaukset <button onClick={getOrders}>Refresh</button><button onClick={() => handleTargetChange('orders')} >Add</button>
-                {(Array.isArray(orders) && orders.length > 0) && orders.map(order => {
+                Tilaukset <br />
+                <button onClick={getOrders}>Refresh</button>
+                <button onClick={() => handleTargetChange('orders')}>Add</button>
+                <button onClick={() => setToggles(prev => ({ ...prev, orders: !prev['orders'] }))}>{toggles.orders ? 'Piilota' : 'Näytä'}</button>
+                {toggles.orders && (Array.isArray(orders) && orders.length > 0) && orders.map(order => {
                     const starts_at = new Date(order.starts_at).toLocaleString()
                     const ends_at = new Date(order.ends_at).toLocaleString()
                     return <Box key={order._id} onPressModify={() => onPressModify('orders', order)}>
@@ -137,9 +148,12 @@ const Home = (props) => {
                 })}
             </div>
             <div>
-                Autot <button onClick={getCars}>Refresh</button><button onClick={() => handleTargetChange('cars')}>Add</button>
+                Autot <br />
+                <button onClick={getCars}>Refresh</button>
+                <button onClick={() => handleTargetChange('cars')}>Add</button>
+                <button onClick={() => setToggles(prev => ({ ...prev, cars: !prev['cars'] }))}>{toggles.cars ? 'Piilota' : 'Näytä'}</button>
                 <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                {(Array.isArray(cars) && cars.length > 0) && cars.map(car => {
+                {toggles.cars && (Array.isArray(cars) && cars.length > 0) && cars.map(car => {
                     return <Box key={car._id} image_url={car.image_url} onPressModify={() => onPressModify('cars', car)} onPressRemove={() => onPressRemove('cars', car._id)} >
                         <p>{car.name} {car.manufacturer} {car.model}</p>
                         <p>{car.year} {car.km} {car.fueltype}</p>

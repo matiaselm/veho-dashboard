@@ -6,7 +6,7 @@ import Cars from "./pages/Cars";
 import Home from "./pages/Home";
 import './App.css';
 import axios from './services/axios';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
@@ -15,6 +15,7 @@ const App = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
+    console.log(form);
     axios.post('verify', form).then(res => {
       setIsAuthenticated(true);
       setForm({ username: '', password: '' })
@@ -26,6 +27,7 @@ const App = () => {
   }
 
   const handleTargetChange = (e) => {
+    e?.preventDefault();
     setForm({
       ...form,
       [e.target.name]: e.target.value
